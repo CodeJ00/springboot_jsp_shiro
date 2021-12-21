@@ -4,7 +4,7 @@ import com.mj.shiro.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * @author 
+ * @author 37714
  * @version 1.0
  * @description: TODO
  * @date 2021/12/21 13:03:42
