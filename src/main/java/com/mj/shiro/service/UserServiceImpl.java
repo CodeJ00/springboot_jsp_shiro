@@ -1,6 +1,7 @@
 package com.mj.shiro.service;
 
 import com.mj.shiro.dao.UserDao;
+import com.mj.shiro.pojo.Perms;
 import com.mj.shiro.pojo.User;
 import com.mj.shiro.utils.SaltUtils;
 import org.apache.shiro.SecurityUtils;
@@ -13,6 +14,8 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @author 37714
@@ -42,5 +45,15 @@ public class UserServiceImpl implements UserService {
     public User selectByUsername(String username) {
         User user = userDao.selectByUsername(username);
         return user;
+    }
+
+    @Override
+    public User selectRolesByUsername(String username) {
+        return userDao.selectRolesByUsername(username);
+    }
+
+    @Override
+    public List<Perms> selectPermsByRoleId(String id) {
+        return userDao.selectPermsByRoleId(id);
     }
 }

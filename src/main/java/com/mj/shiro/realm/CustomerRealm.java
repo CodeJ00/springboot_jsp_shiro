@@ -1,6 +1,7 @@
 package com.mj.shiro.realm;
 
 import com.mj.shiro.dao.UserDao;
+import com.mj.shiro.pojo.Perms;
 import com.mj.shiro.pojo.User;
 import com.mj.shiro.service.UserService;
 import com.mj.shiro.utils.ApplicationContextUtils;
@@ -9,11 +10,16 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
+import org.apache.shiro.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author 37714
@@ -26,6 +32,23 @@ public class CustomerRealm extends AuthorizingRealm {
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+        String primaryPrincipal = (String) principals.getPrimaryPrincipal();
+        UserService userService = (UserService) ApplicationContextUtils.getBean("userService");
+        User user = userService.selectRolesByUsername(primaryPrincipal);
+        if (user.getRoles() != null){
+            SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
+            user.getRoles().forEach(role -> {
+                simpleAuthorizationInfo.addRole(role.getName());
+                List<Perms> perms = userService.selectPermsByRoleId(role.getId());
+                if (!CollectionUtils.isEmpty(perms)){
+                    perms.forEach(perm->{
+                        simpleAuthorizationInfo.addStringPermission(perm.getName());
+                    });
+                }
+            });
+
+            return simpleAuthorizationInfo;
+        }
         return null;
     }
 

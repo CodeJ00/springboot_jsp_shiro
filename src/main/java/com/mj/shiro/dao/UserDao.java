@@ -1,7 +1,10 @@
 package com.mj.shiro.dao;
 
+import com.mj.shiro.pojo.Perms;
 import com.mj.shiro.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * @author 37714
@@ -14,4 +17,8 @@ public interface UserDao {
     void save(User user);
 
     User selectByUsername(String username);
+
+    User selectRolesByUsername(String username);
+
+    List<Perms> selectPermsByRoleId(String id);
 }
