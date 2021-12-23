@@ -11,6 +11,7 @@
 </head>
 <body>
     <h1>系统主页</h1>
+    <h2><shiro:principal/></h2>
     <a href="${pageContext.request.contextPath}/user/logout">退出登录</a>
     <ul>
         <shiro:hasAnyRoles name="user,admin">

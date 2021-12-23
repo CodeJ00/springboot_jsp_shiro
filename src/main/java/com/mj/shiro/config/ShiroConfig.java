@@ -1,7 +1,9 @@
 package com.mj.shiro.config;
 
+import com.mj.shiro.cache.RedisCacheManager;
 import com.mj.shiro.realm.CustomerRealm;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
@@ -49,6 +51,16 @@ public class ShiroConfig {
         HashedCredentialsMatcher matcher = new HashedCredentialsMatcher("md5");
         matcher.setHashIterations(1024);
         customerRealm.setCredentialsMatcher(matcher);
+
+        // 开启缓存
+        customerRealm.setCacheManager(new RedisCacheManager());
+//        customerRealm.setCacheManager(new EhCacheManager());
+        customerRealm.setCachingEnabled(true);
+        customerRealm.setAuthenticationCachingEnabled(true);
+        customerRealm.setAuthenticationCacheName("AuthenticationCache");
+        customerRealm.setAuthorizationCachingEnabled(true);
+        customerRealm.setAuthorizationCacheName("AuthorizationCache");
+
         return customerRealm;
     }
 }

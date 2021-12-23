@@ -1,5 +1,6 @@
 package com.mj.shiro.realm;
 
+import com.mj.shiro.cache.MyByteSource;
 import com.mj.shiro.dao.UserDao;
 import com.mj.shiro.pojo.Perms;
 import com.mj.shiro.pojo.User;
@@ -13,9 +14,7 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.util.ByteSource;
 import org.apache.shiro.util.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Collections;
@@ -58,7 +57,12 @@ public class CustomerRealm extends AuthorizingRealm {
         UserService userService = (UserService) ApplicationContextUtils.getBean("userService");
         User user = userService.selectByUsername(principal);
         if (!ObjectUtils.isEmpty(user)){
-            SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(user.getUsername(), user.getPassword(), ByteSource.Util.bytes(user.getSalt()), this.getName());
+            SimpleAuthenticationInfo simpleAuthenticationInfo =
+                    new SimpleAuthenticationInfo(
+                            user.getUsername(),
+                            user.getPassword(),
+                            new MyByteSource(user.getSalt()),
+                            this.getName());
             return simpleAuthenticationInfo;
         }
         return null;
